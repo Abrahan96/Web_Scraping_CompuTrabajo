@@ -1,0 +1,39 @@
+habilidad,categoria,sinonimos
+Excel,Técnica,excel|microsoft excel|hojas de calculo
+SQL,Técnica,sql|mysql|postgresql|sql server|oracle database
+Python,Técnica,python|pandas|numpy
+Power BI,Técnica,power bi|powerbi|dax
+Tableau,Técnica,tableau
+Looker,Técnica,looker|looker studio|google data studio
+R,Técnica,lenguaje r|r studio|rstudio
+SAP,Técnica,sap|sap hana|s4 hana
+AWS,Técnica,aws|amazon web services
+Azure,Técnica,microsoft azure|azure
+Google Cloud,Técnica,gcp|google cloud|bigquery|big query
+Databricks,Técnica,databricks
+Spark,Técnica,apache spark|pyspark
+ETL,Técnica,etl|elt|integracion de datos
+Git,Técnica,git|github|gitlab
+Docker,Técnica,docker|contenedores
+Kubernetes,Técnica,kubernetes|k8s
+Java,Técnica,java
+JavaScript,Técnica,javascript|typescript|node.js|nodejs
+CRM,Técnica,crm|salesforce|hubspot
+Marketing digital,Técnica,marketing digital|seo|sem|google ads|meta ads
+Ventas,Técnica,ventas|venta consultiva|b2b|b2c
+Logística,Técnica,logistica|cadena de suministro|supply chain|almacen
+Finanzas,Técnica,finanzas|contabilidad|presupuestos
+Atención al cliente,Blanda,atencion al cliente|servicio al cliente|customer service
+Comunicación,Blanda,comunicacion efectiva|comunicacion asertiva|habilidades comunicativas
+Trabajo en equipo,Blanda,trabajo en equipo|colaboracion|trabajo colaborativo
+Liderazgo,Blanda,liderazgo|gestion de equipos|manejo de equipos
+Resolución de problemas,Blanda,resolucion de problemas|solucion de problemas
+Pensamiento analítico,Blanda,pensamiento analitico|capacidad analitica|analisis de informacion
+Organización,Blanda,organizacion|planificacion|gestion del tiempo
+Proactividad,Blanda,proactividad|proactivo|proactiva
+Adaptabilidad,Blanda,adaptabilidad|adaptacion al cambio
+Negociación,Blanda,negociacion|habilidades de negociacion
+Scrum,Metodología,scrum|metodologias agiles|metodologia agil|agile
+Kanban,Metodología,kanban
+Inglés,Idioma,ingles|english
+Portugués,Idioma,portugues

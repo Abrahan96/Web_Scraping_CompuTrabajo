@@ -1,0 +1,15 @@
+{
+  "total_registros": 30,
+  "duplicados_eliminados": 0,
+  "cobertura_detalle_pct": 100.0,
+  "cobertura_habilidades_pct": 96.67,
+  "cobertura_experiencia_pct": 70.0,
+  "empresas_unicas": 8,
+  "campos_vacios": {
+    "titulo": 0,
+    "empresa": 0,
+    "ubicacion": 0,
+    "descripcion": 0,
+    "url": 0
+  }
+}
