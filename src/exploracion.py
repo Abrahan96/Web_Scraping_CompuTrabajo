@@ -1,67 +1,76 @@
-"""Exploración reproducible del HTML y extracción inicial de tarjetas."""
+"""Funciones para explorar y extraer información del HTML."""
 
-from __future__ import annotations
-
-from collections import Counter
-from typing import Any
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
 
-BASE_URL = "https://pe.computrabajo.com"
+URL_BASE = "https://pe.computrabajo.com"
 
 
-def _texto(elemento: Any) -> str:
-    return elemento.get_text(" ", strip=True) if elemento else ""
+def crear_soup(html):
+    """Convierte el texto HTML en un árbol que BeautifulSoup puede recorrer."""
+    return BeautifulSoup(html, "html.parser")
 
 
-class ExploradorHTML:
-    def __init__(self, codigo_html: str) -> None:
-        if not codigo_html.strip():
-            raise ValueError("No se puede explorar un documento HTML vacío.")
-        self.sopa = BeautifulSoup(codigo_html, "html.parser")
+def explorar_html(soup):
+    """Muestra información general para conocer la estructura de la página."""
+    tarjetas = soup.find_all("article", class_="box_offer")
+    titulos_h2 = soup.find_all("h2")
+    enlaces = soup.find_all("a")
+    etiquetas = soup.find_all(True)
 
-    def resumir_estructura(self) -> dict[str, Any]:
-        """Devuelve métricas útiles para estudiar la estructura en terminal."""
-        etiquetas = Counter(elemento.name for elemento in self.sopa.find_all(True))
-        clases = Counter(
-            clase
-            for elemento in self.sopa.find_all(True)
-            for clase in (elemento.get("class") or [])
+    print("\n--- EXPLORACIÓN DEL HTML ---")
+    print(f"Título de la página: {soup.title.get_text(strip=True) if soup.title else 'Sin título'}")
+    print(f"Total de etiquetas: {len(etiquetas)}")
+    print(f"Etiquetas h2: {len(titulos_h2)}")
+    print(f"Enlaces: {len(enlaces)}")
+    print(f"Tarjetas de empleo: {len(tarjetas)}")
+
+    # Mostramos una tarjeta para entender el contenedor repetible.
+    if tarjetas:
+        print("\nPrimer título encontrado:")
+        primer_titulo = tarjetas[0].find("a", class_="js-o-link")
+        print(primer_titulo.get_text(strip=True) if primer_titulo else "No encontrado")
+
+    return len(tarjetas)
+
+
+def extraer_ofertas(soup):
+    """Recorre cada tarjeta y obtiene título, empresa, ubicación y URL."""
+    ofertas = []
+    tarjetas = soup.find_all("article", class_="box_offer")
+
+    for tarjeta in tarjetas:
+        enlace_titulo = tarjeta.find("a", class_="js-o-link")
+
+        # Si la tarjeta no tiene título, no podemos usarla.
+        if enlace_titulo is None:
+            continue
+
+        titulo = enlace_titulo.get_text(strip=True)
+        url = urljoin(URL_BASE, enlace_titulo.get("href", "").split("#")[0])
+
+        bloque_empresa = tarjeta.find("p", class_="dFlex")
+        enlace_empresa = bloque_empresa.find("a") if bloque_empresa else None
+        empresa = enlace_empresa.get_text(strip=True) if enlace_empresa else "Empresa confidencial"
+
+        ubicacion = "No especificada"
+        parrafos = tarjeta.find_all("p", class_="fs16")
+        for parrafo in parrafos:
+            clases = parrafo.get("class", [])
+            if "dFlex" not in clases:
+                ubicacion = parrafo.get_text(" ", strip=True)
+                break
+
+        ofertas.append(
+            {
+                "titulo": titulo,
+                "empresa": empresa,
+                "ubicacion": ubicacion,
+                "url": url,
+            }
         )
-        return {
-            "titulo_pagina": _texto(self.sopa.title),
-            "total_etiquetas": sum(etiquetas.values()),
-            "tarjetas_detectadas": len(self.sopa.select("article.box_offer")),
-            "etiquetas_frecuentes": dict(etiquetas.most_common(8)),
-            "clases_frecuentes": dict(clases.most_common(8)),
-        }
 
-    @staticmethod
-    def _extraer_empresa(tarjeta: Any) -> str:
-        empresa = tarjeta.select_one("p.dFlex.fs16 a, p.fs16 a.t_ellipsis")
-        return _texto(empresa) or "Empresa confidencial"
-
-    @staticmethod
-    def _extraer_ubicacion(tarjeta: Any) -> str:
-        for bloque in tarjeta.select("p.fs16.fc_base.mt5"):
-            if "dFlex" not in (bloque.get("class") or []):
-                return _texto(bloque)
-        return "No especificada"
-
-    def extraer_ofertas(self) -> list[dict[str, str]]:
-        ofertas: list[dict[str, str]] = []
-        for tarjeta in self.sopa.select("article.box_offer"):
-            enlace = tarjeta.select_one("a.js-o-link[href], h2 a[href]")
-            if not enlace:
-                continue
-            ofertas.append(
-                {
-                    "titulo": _texto(enlace),
-                    "empresa": self._extraer_empresa(tarjeta),
-                    "ubicacion": self._extraer_ubicacion(tarjeta),
-                    "url": urljoin(BASE_URL, enlace.get("href", "").split("#")[0]),
-                }
-            )
-        return ofertas
+    print(f"\nOfertas extraídas: {len(ofertas)}")
+    return ofertas

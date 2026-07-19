@@ -13,7 +13,11 @@ Demostrar desde la terminal que Python puede conectarse a una URL pública de Co
 5. Persistencia de datos crudos en JSON.
 6. Limpieza de espacios, títulos vacíos y duplicados con Pandas.
 7. Persistencia de datos limpios en CSV.
-8. Pruebas unitarias ejecutables sin conexión a internet.
+8. Pruebas sencillas con funciones y `assert`, ejecutables sin conexión a internet.
+
+## Enfoque de programación
+
+Este avance utiliza programación secuencial y funciones. La programación orientada a objetos se reserva para una etapa posterior, cuando el crecimiento del proyecto justifique organizar estado y comportamiento en clases.
 
 ## Evidencias para la exposición
 
@@ -22,7 +26,7 @@ Demostrar desde la terminal que Python puede conectarse a una URL pública de Co
 - Cantidad de tarjetas detectadas y registros extraídos.
 - Comparación entre datos crudos y limpios.
 - Reporte de filas descartadas y duplicados.
-- Resultado de las pruebas con estado `OK`.
+- Resultado de cinco pruebas con estado `OK`.
 
 ## Fuera del alcance
 

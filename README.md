@@ -2,17 +2,20 @@
 
 Esta rama contiene exclusivamente el primer avance académico: conexión a la URL, exploración del HTML, extracción inicial, limpieza básica y pruebas desde terminal.
 
+El código utiliza **funciones y programación secuencial**, igual que los ejemplos iniciales del curso. No utiliza programación orientada a objetos.
+
 ## Estructura
 
 ```text
-main.py                 Orquestación para terminal
-src/conexion.py         Construcción de URL y solicitud HTTP
-src/exploracion.py      Exploración HTML y extracción de tarjetas
-src/limpieza.py         Limpieza y reporte con Pandas
-tests/                  Pruebas sin dependencia de internet
+main.py                    Pasos principales ejecutados en orden
+src/conexion.py            Funciones de URL y solicitud HTTP
+src/exploracion.py         Funciones de BeautifulSoup
+src/limpieza.py            Funciones de limpieza con Pandas
+tests/pruebas_terminal.py  Pruebas sencillas con assert
 data/raw/               Muestra de datos crudos
 data/processed/         Muestra limpia
 docs/ENTREGABLE_1.md    Alcance y evidencias
+docs/GUIA_SUSTENTACION.md Guía para explicar el código
 ```
 
 ## Instalación
@@ -26,7 +29,7 @@ python -m pip install -r requirements.txt
 ## Ejecución en terminal
 
 ```powershell
-python main.py --puesto "analista de datos" --paginas 1
+python main.py
 ```
 
 La terminal mostrará:
@@ -41,10 +44,19 @@ La terminal mostrará:
 ## Pruebas
 
 ```powershell
-python -m unittest discover -s tests -v
+python -m tests.pruebas_terminal
 ```
 
-Las pruebas usan un HTML reducido en `tests/fixtures/listado.html`, por lo que no dependen de la disponibilidad de Computrabajo.
+Las pruebas usan funciones, instrucciones `assert` y un HTML reducido en `tests/fixtures/listado.html`. No necesitan conectarse a Computrabajo.
+
+## Cambiar la búsqueda
+
+Abre `main.py` y modifica estas dos variables:
+
+```python
+PUESTO_BUSCADO = "analista de datos"
+CANTIDAD_PAGINAS = 1
+```
 
 ## Archivos generados
 

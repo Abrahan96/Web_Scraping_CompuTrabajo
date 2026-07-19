@@ -1,63 +1,66 @@
-"""Ejecución por terminal del primer avance académico."""
+"""Primer entregable: conexión, exploración y limpieza desde terminal."""
 
-from __future__ import annotations
-
-import argparse
 import json
-from pathlib import Path
+import os
 
-from src.conexion import ClienteComputrabajo, ErrorConexion
-from src.exploracion import ExploradorHTML
-from src.limpieza import LimpiadorOfertas
-
-
-RUTA_CRUDA = Path("data/raw/ultima_extraccion.json")
-RUTA_LIMPIA = Path("data/processed/ofertas_limpias.csv")
+from src.conexion import conectar
+from src.exploracion import crear_soup, explorar_html, extraer_ofertas
+from src.limpieza import crear_dataframe, guardar_csv, limpiar_datos
 
 
-def ejecutar(puesto: str, paginas: int) -> int:
-    cliente = ClienteComputrabajo()
-    ofertas: list[dict[str, str]] = []
-
-    print(f"[1/4] Conectando con Computrabajo para: {puesto}")
-    for pagina in range(1, paginas + 1):
-        respuesta = cliente.conectar(puesto, pagina)
-        print(f"  Página {pagina}: HTTP {respuesta.status_code} - {len(respuesta.text):,} caracteres")
-
-        explorador = ExploradorHTML(respuesta.text)
-        resumen = explorador.resumir_estructura()
-        print("[2/4] Exploración de la estructura HTML")
-        print(json.dumps(resumen, ensure_ascii=False, indent=2))
-
-        extraidas = explorador.extraer_ofertas()
-        print(f"  Ofertas extraídas en la página: {len(extraidas)}")
-        ofertas.extend(extraidas)
-
-    RUTA_CRUDA.parent.mkdir(parents=True, exist_ok=True)
-    RUTA_CRUDA.write_text(json.dumps(ofertas, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[3/4] Datos crudos guardados en {RUTA_CRUDA}")
-
-    limpiador = LimpiadorOfertas(ofertas)
-    dataframe = limpiador.limpiar()
-    limpiador.guardar_csv(RUTA_LIMPIA)
-    print("[4/4] Limpieza completada")
-    print(json.dumps(limpiador.reporte, ensure_ascii=False, indent=2))
-    print(dataframe.head(10).to_string(index=False))
-    print(f"CSV limpio guardado en {RUTA_LIMPIA}")
-    return 0
+# Estas variables se pueden cambiar para realizar otra búsqueda.
+PUESTO_BUSCADO = "analista de datos"
+CANTIDAD_PAGINAS = 1
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Primer avance del analizador laboral")
-    parser.add_argument("--puesto", default="analista de datos", help="Puesto a consultar")
-    parser.add_argument("--paginas", type=int, default=1, choices=range(1, 4))
-    argumentos = parser.parse_args()
-    try:
-        return ejecutar(argumentos.puesto, argumentos.paginas)
-    except (ErrorConexion, ValueError) as error:
-        print(f"ERROR: {error}")
-        return 1
+def guardar_json(ofertas, ruta):
+    """Guarda la información sin limpiar para conservar la fuente original."""
+    carpeta = os.path.dirname(ruta)
+    os.makedirs(carpeta, exist_ok=True)
+
+    with open(ruta, "w", encoding="utf-8") as archivo:
+        json.dump(ofertas, archivo, ensure_ascii=False, indent=2)
+
+    print(f"JSON guardado en: {ruta}")
+
+
+def ejecutar_scraping():
+    """Ejecuta paso a paso el primer avance del proyecto."""
+    todas_las_ofertas = []
+
+    print("=" * 60)
+    print("ANALIZADOR DE OFERTAS DE COMPUTRABAJO")
+    print("=" * 60)
+    print(f"Puesto buscado: {PUESTO_BUSCADO}")
+
+    for pagina in range(1, CANTIDAD_PAGINAS + 1):
+        print(f"\nProcesando página {pagina}...")
+        respuesta = conectar(PUESTO_BUSCADO, pagina)
+
+        if respuesta is None:
+            print("No se pudo procesar esta página.")
+            continue
+
+        soup = crear_soup(respuesta.text)
+        explorar_html(soup)
+        ofertas_pagina = extraer_ofertas(soup)
+        todas_las_ofertas.extend(ofertas_pagina)
+
+    if len(todas_las_ofertas) == 0:
+        print("No se encontraron ofertas. El proceso ha terminado.")
+        return
+
+    guardar_json(todas_las_ofertas, "data/raw/ultima_extraccion.json")
+
+    dataframe = crear_dataframe(todas_las_ofertas)
+    dataframe_limpio = limpiar_datos(dataframe)
+
+    print("\n--- PRIMERAS OFERTAS LIMPIAS ---")
+    print(dataframe_limpio.head(10).to_string(index=False))
+
+    guardar_csv(dataframe_limpio, "data/processed/ofertas_limpias.csv")
+    print("\nProceso finalizado correctamente.")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    ejecutar_scraping()
