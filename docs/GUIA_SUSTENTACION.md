@@ -40,13 +40,16 @@ URL -> requests -> HTML -> BeautifulSoup -> lista -> DataFrame -> CSV
 
 Ejecuta el proceso en este orden:
 
-1. Conectar.
-2. Crear el objeto `soup`.
-3. Explorar el HTML.
-4. Extraer las ofertas.
-5. Guardar JSON crudo.
-6. Crear y limpiar el DataFrame.
-7. Guardar CSV.
+1. Solicitar el puesto con `input()`.
+2. Conectar.
+3. Crear el objeto `soup`.
+4. Explorar el HTML.
+5. Extraer las ofertas.
+6. Guardar JSON crudo.
+7. Crear y limpiar el DataFrame.
+8. Guardar CSV.
+
+Si el usuario presiona Enter sin escribir un puesto, el programa utiliza `analista de datos` como valor predeterminado. Esto evita que se construya una URL vacía.
 
 ## Preguntas probables
 
@@ -87,9 +90,10 @@ python -m tests.pruebas_terminal
 
 Durante la demostración señala:
 
-1. El código HTTP 200.
-2. La cantidad de tarjetas encontradas.
-3. Un registro de la lista de diccionarios.
-4. La cantidad de filas antes y después de limpiar.
-5. Los archivos JSON y CSV generados.
-6. Las cinco pruebas con resultado `OK`.
+1. El puesto ingresado dinámicamente.
+2. El código HTTP 200.
+3. La cantidad de tarjetas encontradas.
+4. Un registro de la lista de diccionarios.
+5. La cantidad de filas antes y después de limpiar.
+6. Los archivos JSON y CSV generados.
+7. Las cinco pruebas con resultado `OK`.

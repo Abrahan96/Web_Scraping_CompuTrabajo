@@ -8,8 +8,8 @@ from src.exploracion import crear_soup, explorar_html, extraer_ofertas
 from src.limpieza import crear_dataframe, guardar_csv, limpiar_datos
 
 
-# Estas variables se pueden cambiar para realizar otra búsqueda.
-PUESTO_BUSCADO = "analista de datos"
+# Si el usuario no escribe un puesto, usamos este valor de ejemplo.
+PUESTO_POR_DEFECTO = "analista de datos"
 CANTIDAD_PAGINAS = 1
 
 
@@ -24,18 +24,32 @@ def guardar_json(ofertas, ruta):
     print(f"JSON guardado en: {ruta}")
 
 
+def solicitar_puesto():
+    """Solicita el puesto al usuario mediante la terminal."""
+    puesto = input(
+        f"Escribe el puesto que deseas buscar [{PUESTO_POR_DEFECTO}]: "
+    ).strip()
+
+    # Si solo presiona Enter, usamos el ejemplo predeterminado.
+    if puesto == "":
+        puesto = PUESTO_POR_DEFECTO
+
+    return puesto
+
+
 def ejecutar_scraping():
     """Ejecuta paso a paso el primer avance del proyecto."""
     todas_las_ofertas = []
+    puesto_buscado = solicitar_puesto()
 
     print("=" * 60)
     print("ANALIZADOR DE OFERTAS DE COMPUTRABAJO")
     print("=" * 60)
-    print(f"Puesto buscado: {PUESTO_BUSCADO}")
+    print(f"Puesto buscado: {puesto_buscado}")
 
     for pagina in range(1, CANTIDAD_PAGINAS + 1):
         print(f"\nProcesando página {pagina}...")
-        respuesta = conectar(PUESTO_BUSCADO, pagina)
+        respuesta = conectar(puesto_buscado, pagina)
 
         if respuesta is None:
             print("No se pudo procesar esta página.")

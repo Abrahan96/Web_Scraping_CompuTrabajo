@@ -32,6 +32,14 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
+El programa solicitará el puesto en la terminal:
+
+```text
+Escribe el puesto que deseas buscar [analista de datos]:
+```
+
+Puedes escribir, por ejemplo, `técnico de farmacia`. Si presionas Enter sin escribir, se utilizará `analista de datos`.
+
 La terminal mostrará:
 
 - URL consultada y estado HTTP.
@@ -49,14 +57,7 @@ python -m tests.pruebas_terminal
 
 Las pruebas usan funciones, instrucciones `assert` y un HTML reducido en `tests/fixtures/listado.html`. No necesitan conectarse a Computrabajo.
 
-## Cambiar la búsqueda
-
-Abre `main.py` y modifica estas dos variables:
-
-```python
-PUESTO_BUSCADO = "analista de datos"
-CANTIDAD_PAGINAS = 1
-```
+La cantidad de páginas se mantiene en una variable sencilla dentro de `main.py` para este primer avance.
 
 ## Archivos generados
 

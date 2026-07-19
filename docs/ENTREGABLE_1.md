@@ -6,7 +6,7 @@ Demostrar desde la terminal que Python puede conectarse a una URL pública de Co
 
 ## Alcance implementado
 
-1. Construcción dinámica de la URL a partir del puesto buscado.
+1. Entrada dinámica del puesto mediante `input()` y construcción de la URL.
 2. Solicitud HTTP con encabezados, timeout y validación de respuesta.
 3. Conteo de etiquetas, clases y tarjetas detectadas.
 4. Extracción de título, empresa, ubicación y URL.
