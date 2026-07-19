@@ -1,42 +1,21 @@
-# Radar Laboral Perú
+# Analizador de ofertas de Computrabajo - Entregable 1
 
-Data App académica que extrae ofertas públicas de Computrabajo Perú, valida su calidad y analiza las habilidades solicitadas para cualquier puesto consultado.
+Esta rama contiene exclusivamente el primer avance académico: conexión a la URL, exploración del HTML, extracción inicial, limpieza básica y pruebas desde terminal.
 
-## Funcionalidades
-
-- Ingesta automatizada del listado y detalle de cada oferta.
-- Lectura preferente del esquema público `JobPosting` de cada página.
-- Reintentos, timeout, límites de consulta y manejo de errores.
-- Dataset crudo en JSON y procesado en CSV y Parquet.
-- Eliminación de duplicados, normalización y reporte de calidad.
-- Taxonomía externa y ampliable de habilidades técnicas, blandas, idiomas y metodologías.
-- Dashboard con filtros por empresa, ubicación, experiencia y habilidad.
-- Descarga de resultados filtrados.
-- Pruebas unitarias sin depender de la web.
-
-## Arquitectura
+## Estructura
 
 ```text
-Computrabajo (listado)
-        ↓
-URLs de ofertas
-        ↓
-JobPosting (detalle)
-        ↓
-data/raw/ultima_busqueda.json
-        ↓
-limpieza + validación + habilidades
-        ↓
-CSV + Parquet + reporte de calidad
-        ↓
-Streamlit
+main.py                 Orquestación para terminal
+src/conexion.py         Construcción de URL y solicitud HTTP
+src/exploracion.py      Exploración HTML y extracción de tarjetas
+src/limpieza.py         Limpieza y reporte con Pandas
+tests/                  Pruebas sin dependencia de internet
+data/raw/               Muestra de datos crudos
+data/processed/         Muestra limpia
+docs/ENTREGABLE_1.md    Alcance y evidencias
 ```
 
-La interfaz solo presenta resultados devueltos por la ejecución actual. Si una búsqueda falla, no atribuye el Parquet anterior a la nueva consulta.
-
 ## Instalación
-
-Requiere Python 3.11 o superior.
 
 ```powershell
 python -m venv venv
@@ -44,11 +23,20 @@ python -m venv venv
 python -m pip install -r requirements.txt
 ```
 
-## Ejecución
+## Ejecución en terminal
 
 ```powershell
-python -m streamlit run app/main.py
+python main.py --puesto "analista de datos" --paginas 1
 ```
+
+La terminal mostrará:
+
+- URL consultada y estado HTTP.
+- Tamaño de la respuesta.
+- Resumen de etiquetas y clases HTML.
+- Cantidad de ofertas extraídas.
+- Reporte de limpieza.
+- Vista previa del dataset.
 
 ## Pruebas
 
@@ -56,24 +44,15 @@ python -m streamlit run app/main.py
 python -m unittest discover -s tests -v
 ```
 
-## Datos generados
+Las pruebas usan un HTML reducido en `tests/fixtures/listado.html`, por lo que no dependen de la disponibilidad de Computrabajo.
 
-| Archivo | Descripción |
-|---|---|
-| `data/raw/ultima_busqueda.json` | Respuesta normalizada, aún sin reglas analíticas. |
-| `data/processed/ultima_busqueda.csv` | Dataset legible e interoperable. |
-| `data/processed/ultima_busqueda.parquet` | Dataset optimizado para análisis. |
-| `data/processed/reporte_calidad.json` | Cobertura, vacíos y duplicados eliminados. |
+## Archivos generados
 
-## Configuración de habilidades
+```text
+data/raw/ultima_extraccion.json
+data/processed/ofertas_limpias.csv
+```
 
-La taxonomía está en `config/habilidades.csv`. Cada fila contiene una habilidad canónica, su categoría y sinónimos separados por `|`. Esto permite ampliar la solución sin modificar código Python.
+## Limitaciones de este avance
 
-## Uso responsable
-
-El extractor limita páginas y ofertas, espera entre solicitudes y aplica reintentos con espera progresiva. Antes de desplegarlo públicamente se deben revisar y respetar los términos de uso y las políticas vigentes del portal. No se recolectan datos personales de candidatos.
-
-## Documentación académica
-
-- [Trazabilidad con la rúbrica](docs/RUBRICA_TECNICA.md)
-- [Plantilla del informe final](docs/INFORME_PROYECTO.md)
+No incluye extracción de descripciones, análisis de habilidades, Data App, visualizaciones ni despliegue. Esas funcionalidades permanecen en la rama `main` como referencia del proyecto final.
